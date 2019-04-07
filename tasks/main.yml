@@ -1,2 +1,58 @@
 ---
 # tasks file for egeneralov.seaweedfs
+
+- name: "assert if {{ weed.version }} is supported by role"
+  assert:
+    that:
+      - "weed.version in weed_supported_versions"
+    fail_msg: "{{ weed.version }} is not supported version"
+    success_msg: "Provisioning seaweedfs=={{ weed.version }}"
+
+- include_tasks: iptables.yml
+  when: manage_iptables
+  loop_control:
+    loop_var: port
+  with_items:
+    - 1933
+    - 9333
+    - 8080
+
+- name: Ensure tar installed
+  apt:
+    name:
+      - tar
+      - gzip
+    update_cache: yes
+    cache_valid_time: 3600
+
+
+- name: Download weed
+  unarchive:
+    src: "{{ download_url }}"
+    dest: "{{ weed.destination }}"
+    remote_src: yes
+  register: weed_download
+
+
+- name: Ensure datapath exist
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ weed.master.dir }}"
+    - "{{ weed.volume.dir }}"
+
+
+- name: place seaweedfs.service
+  template:
+    src: seaweedfs.service.j2
+    dest: /etc/systemd/system/seaweedfs.service
+  register: weed_service
+
+
+- name: manage seaweedfs.service runtime
+  systemd:
+    name: seaweedfs.service
+    state: "{% if weed_download.changed or weed_service.changed %}restarted{% else %}started{% endif %}"
+    daemon_reload: "{% if weed_service.changed %}yes{% else %}no{% endif %}"
+  register: some

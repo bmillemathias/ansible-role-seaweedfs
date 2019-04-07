@@ -1,0 +1,15 @@
+[Unit]
+Description=SeaweedFS {{ weed.version }}
+After=network.target
+
+
+[Service]
+Type=simple
+Restart=always
+
+ExecStart={{ weed.destination }}/weed server -volume.publicUrl=http://{{ domain }} -volume.max 17 -ip.bind 127.0.0.1 -master.dir {{ weed.master.dir }} -dir {{ weed.volume.dir }} -ip 127.0.0.1 -dataCenter={{ weed.volume.dataCenter | default('DefaultDataCenter') }} -rack={{ weed.volume.rack | default('DefaultRack') }}
+
+
+[Install]
+WantedBy=multi-user.target
+

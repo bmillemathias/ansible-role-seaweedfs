@@ -1,0 +1,23 @@
+---
+
+- name: "iptables: Allow new incoming connections to {{ port }}"
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    source: "{{ ips }}"
+    destination_port: "{{ port }}"
+    ctstate: NEW,ESTABLISHED
+    jump: ACCEPT
+    comment: "Allow new incoming connections to {{ port }}"
+  with_items: "{{ ansible_all_ipv4_addresses }}"
+  loop_control:
+    loop_var: ips
+
+- name: "iptables: Allow {{ port }} ESTABLISHED connections"
+  iptables:
+    chain: OUTPUT
+    protocol: tcp
+    source_port: "{{ port }}"
+    ctstate: ESTABLISHED
+    jump: ACCEPT
+    comment: "Allow {{ port }} ESTABLISHED connections"

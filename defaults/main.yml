@@ -1,2 +1,24 @@
 ---
 # defaults file for egeneralov.seaweedfs
+
+arch:
+  x86_64: amd64
+  x86: i386
+
+domain: weed.domain.tld
+
+weed:
+  version: 0.76
+  bind: 127.0.0.1
+  ip: 127.0.0.1
+  destination: /usr/local/sbin
+  master:
+    dir: "/opt/seaweedfs/{{ domain }}/master"
+  volume:
+    dir: "/opt/seaweedfs/{{ domain }}/volume"
+    dataCenter: DefaultDataCenter
+    rack: DefaultRack
+
+download_url: "https://github.com/chrislusf/seaweedfs/releases/download/{{ weed.version }}/{{ ansible_system|lower }}_{{ arch[ansible_architecture] }}.tar.gz"
+
+manage_iptables: false
