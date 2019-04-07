@@ -1,38 +1,161 @@
-Role Name
-=========
+egeneralov.seaweedfs
+====================
 
-A brief description of the role goes here.
+Provision installation for [seaweedfs](https://github.com/chrislusf/seaweedfs)
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Debian.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+- **domain**: `weed.domain.tld`
+- **weed**:
+  - **version**: `0.76`
+  - **bind**: `127.0.0.1`
+  - **ip**: `127.0.0.1`
+  - **destination**: `/usr/local/sbin`
+  - **master**:
+    - **dir**: `/opt/seaweedfs/{{ domain }}/master`
+  - **volume**:
+    - **dir**: `/opt/seaweedfs/{{ domain }}/volume`
+    - **dataCenter**: `DefaultDataCenter`
+    - **rack**: `DefaultRack`
+- **download_url**: `https://github.com/chrislusf/seaweedfs/releases/download/{{ weed.version }}/{{ ansible_system|lower }}_{{ arch[ansible_architecture] }}.tar.gz`
+- **manage_iptables**: `false`
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
+    ---
+    
+    - hosts: weed.domain.tld
+      gather_facts: no
+    #   no_log: true
+      vars:
+        domains:
+          - weed.domain.tld
+          - master-weed.domain.tld
+      tasks:
+    
+        - sysctl:
+            name: "{{ item }}"
+            value: 1
+            sysctl_set: yes
+            state: present
+            reload: yes
+          with_items:
+            - net.ipv6.conf.lo.disable_ipv6
+            - net.ipv6.conf.all.disable_ipv6
+            - net.ipv6.conf.default.disable_ipv6
+    
+        - file:
+            path: /etc/nginx/ssl/
+            state: directory
+    
+        - apt:
+            name:
+              - python-pip
+              - python-setuptools
+              - openssl
+            update_cache: yes
+            cache_valid_time: 3600
+    
+        - pip:
+            name:
+              - setuptools
+              - pyopenssl
+    
+        - openssl_privatekey:
+            path: "/etc/nginx/ssl/{{ item }}.key"
+          with_items: "{{ domains }}"
+    
+        - openssl_csr:
+            path: "/etc/nginx/ssl/{{ item }}.csr"
+            privatekey_path: "/etc/nginx/ssl/{{ item }}.key"
+            common_name: "{{ item }}"
+          with_items: "{{ domains }}"
+    
+        - openssl_certificate:
+            path: "/etc/nginx/ssl/{{ item }}.crt"
+            privatekey_path: "/etc/nginx/ssl/{{ item }}.key"
+            csr_path: "/etc/nginx/ssl/{{ item }}.csr"
+            provider: selfsigned
+          with_items: "{{ domains }}"
+    
+        - file:
+            path: /usr/local/share/ca-certificates/extra
+            state: directory
+    
+        - copy:
+            remote_src: yes
+            src: "/etc/nginx/ssl/{{ item }}.crt"
+            dest: "/usr/local/share/ca-certificates/extra/{{ item }}.crt"
+          with_items: "{{ domains }}"
+          register: copy
+    
+        - shell: update-ca-certificates
+          changed_when: copy is changed
+    
+    
+    
+    - hosts: weed.domain.tld
+    #   no_log: true
+      vars:
+        manage_iptables: yes
+        vhosts:
+          - domain: "weed.domain.tld"
+            ssl: true
+            rewrite_ssl: true
+            rewrite_www: false
+            ssl_certificate: /etc/nginx/ssl/weed.domain.tld.crt
+            ssl_certificate_key: /etc/nginx/ssl/weed.domain.tld.key
+            root: /opt/seaweedfs/weed.ccbh.tf
+            client_max_body_size: 100m
+            locations:
+              - path: /
+                type: proxy
+                schema: "http://"
+                proxy_to:
+                  - "127.0.0.1:8080"
+          - domain: "master-weed.domain.tld"
+            ssl: true
+            rewrite_ssl: true
+            rewrite_www: false
+            ssl_certificate: /etc/nginx/ssl/master-weed.domain.tld.crt
+            ssl_certificate_key: /etc/nginx/ssl/master-weed.domain.tld.key
+            root: /opt/seaweedfs/weed.ccbh.tf
+            client_max_body_size: 100m
+            locations:
+              - path: /
+                type: proxy
+                schema: "http://"
+                proxy_to:
+                  - "127.0.0.1:9333"
+        domain: weed.domain.tld
+        weed:
+          version: 0.76
+          destination: /usr/local/sbin
+          master:
+            dir: "/opt/seaweedfs/{{ domain }}/master"
+          volume:
+            dir: "/opt/seaweedfs/{{ domain }}/volume"
+            dataCenter: "fra1"
+            rack: "rack1"
       roles:
-         - { role: username.rolename, x: 42 }
+        - egeneralov.sshd_config
+        - egeneralov.iptables
+        - egeneralov.seaweedfs
+        - egeneralov.nginx
 
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Eduard Generalov <eduard@generalov.net>
