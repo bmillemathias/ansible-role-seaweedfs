@@ -1,6 +1,6 @@
 galaxy_info:
   author: Eduard Generalov <eduard@generalov.net>
-  description: your description
+  description: Provision installation for seaweedfs
   license: MIT
   min_ansible_version: 2.4
   platforms:
@@ -11,6 +11,5 @@ galaxy_info:
   galaxy_tags:
     - seaweedfs
     - weed
-    - 
 
 dependencies: []
