@@ -1,5 +1,5 @@
 ---
-# defaults file for egeneralov.seaweedfs
+# defaults file for bmillemathias.seaweedfs
 
 arch:
   x86_64: amd64
@@ -7,18 +7,32 @@ arch:
 
 domain: weed.domain.tld
 
-weed:
-  version: 0.76
-  bind: 127.0.0.1
-  ip: 127.0.0.1
-  destination: /usr/local/sbin
+default_weed:
+  # version has to be quoted, else the the value will be treated as float and
+  # trailing zeros may be trimmed.
+  version: '2.10'
+  bind: 0.0.0.0
+  ip: "{{ ansible_default_ipv4.address }}"
+  location: /usr/local/sbin
+  user:
+    name: seaweed
+    uid:
+    gid:
+  # defaultReplication is set by a triplet
+  # 002 => 2 replicas in the same rack
+  defaultReplication: "002"
   master:
+    port: 9333
     dir: "/opt/seaweedfs/{{ domain }}/master"
   volume:
+    port: 8080
     dir: "/opt/seaweedfs/{{ domain }}/volume"
     dataCenter: DefaultDataCenter
     rack: DefaultRack
+    max_volumes: 16
+  filer:
+    port: 8889
+    dir: "/opt/seaweedfs/{{ domain }}/filer"
+    encryptData: false
 
 download_url: "https://github.com/chrislusf/seaweedfs/releases/download/{{ weed.version }}/{{ ansible_system|lower }}_{{ arch[ansible_architecture] }}.tar.gz"
-
-manage_iptables: false

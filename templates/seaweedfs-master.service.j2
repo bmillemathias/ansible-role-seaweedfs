@@ -1,0 +1,13 @@
+[Unit]
+Description=SeaweedFS master
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart={{ weed.location }}/weed master -ip.bind {{ weed.bind }} -ip {{ weed.ip }} \
+                                          -mdir {{ weed.master.dir }} -defaultReplication {{ weed.defaultReplication }}
+User={{ weed.user.name }}
+
+[Install]
+WantedBy=multi-user.target

@@ -2,4 +2,4 @@
 - hosts: seaweedfs
   remote_user: root
   roles:
-    - egeneralov.seaweedfs
+    - bmillemathias.seaweedfs

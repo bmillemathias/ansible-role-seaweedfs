@@ -1,0 +1,15 @@
+[Unit]
+Description=SeaweedFS volume
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+ExecStart={{ weed.location }}/weed volume -publicUrl http://{{ domain }} -max {{ weed.volume.max_volumes }} \
+                                   -ip.bind {{ weed.bind }} -ip {{ weed.ip }} -dir {{ weed.volume.dir }} \
+                                   -mserver {% for host in groups['weed_master'] %}{{ hostvars[host].ansible_default_ipv4.address }}:{{ weed.master.port }}{%if not loop.last %},{% endif %}{% endfor %} \
+                                   -dataCenter {{ weed.volume.dataCenter | default('DefaultDataCenter') }} -rack {{ weed.volume.rack | default('DefaultRack') }}
+User={{ weed.user.name }}
+
+[Install]
+WantedBy=multi-user.target
