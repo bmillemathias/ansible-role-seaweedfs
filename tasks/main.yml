@@ -1,7 +1,7 @@
 ---
 - name: merge variables passed to role and the defaults
   set_fact:
-    weed: "{{ default_weed | combine(weed, recursive=True) }}"
+    weed: "{{ (default_weed | combine((weed | default({})), recursive=True)) }}"
 
 - name: "check the release {{ weed.version }} exists on GitHub"
   uri:
