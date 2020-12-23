@@ -15,12 +15,14 @@
     hostname: "{{ groups['all'][0] }}"
     groups: weed_master
   when: groups['weed_master'] is not defined
+  changed_when: False
 
 - name: define seaweed filer host if not done
   add_host:
     hostname: "{{ groups['all'][0] }}"
     groups: weed_filer
   when: groups['weed_filer'] is not defined
+  changed_when: False
 
 - name: gather fact from weed masters
   setup:
@@ -57,6 +59,7 @@
     cmd: weed version
   register: weed_installed_version
   failed_when: weed_installed_version.stdout.split()[2] is version(weed.version, '<>')
+  changed_when: False
 
 - name: configure master server
   when: "'weed_master' in group_names"
