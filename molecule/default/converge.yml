@@ -2,6 +2,6 @@
 - name: Converge
   hosts: all
   tasks:
-    - name: "Include bmm.seaweedfs"
+    - name: "Include bmillemathias.seaweedfs"
       include_role:
-        name: "bmm.seaweedfs"
+        name: "bmillemathias.seaweedfs"

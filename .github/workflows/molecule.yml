@@ -1,0 +1,23 @@
+---
+name: Molecule Test
+on: [push, pull_request]
+jobs:
+  molecule:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: "${{ github.repository }}"
+      - uses: gofrolist/molecule-action@v2
+#       - name: Set up Python ${{ matrix.python-version }}
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: ${{ matrix.python-version }}
+#       - name: Install dependencies
+#         run: |
+#           sudo apt install podman
+#           python3 -m pip install --upgrade pip
+#           python3 -m pip install molecule[podman]
+#       - name: Test with molecule
+#         run: |
+#           molecule test
