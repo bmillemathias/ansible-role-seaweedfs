@@ -1,7 +1,8 @@
 ---
 - name: Converge
   hosts: all
+
   tasks:
     - name: "Include bmillemathias.seaweedfs"
       include_role:
-        name: "bmillemathias.seaweedfs"
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
