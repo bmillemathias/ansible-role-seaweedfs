@@ -42,8 +42,11 @@
 
 - name: create seaweedfs user
   user:
-    name: seaweed
+    name: "{{ weed.user.name }}"
     shell: /bin/false
+    uid: "{{ (weed.user.uid | default(omit)) }}"
+    group: "{{ weed.user.group | default(omit) }}"
+    groups: "{{ weed.user.groups | default(omit) }}"
     system: true
     create_home: false
 

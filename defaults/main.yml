@@ -16,8 +16,6 @@ default_weed:
   location: /usr/local/sbin
   user:
     name: seaweed
-    uid:
-    gid:
   # defaultReplication is set by a triplet
   # 002 => 2 replicas in the same rack
   defaultReplication: "002"
