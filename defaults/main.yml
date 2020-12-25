@@ -17,8 +17,8 @@ default_weed:
   user:
     name: seaweed
   # defaultReplication is set by a triplet
-  # 002 => 2 replicas in the same rack
-  defaultReplication: "002"
+  # 001 => 1 replica in the same rack
+  defaultReplication: "001"
   master:
     port: 9333
     dir: "/opt/seaweedfs/{{ domain }}/master"

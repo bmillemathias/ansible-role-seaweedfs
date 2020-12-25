@@ -1,8 +1,20 @@
 # Ansible Role: seaweedfs
 
-Provision installation for [seaweedfs](https://github.com/chrislusf/seaweedfs) a distributed object storage.
-It installs the components master, volume and filer.
+Provision installation of [seaweedfs](https://github.com/chrislusf/seaweedfs) a distributed object storage.
+This role installs the components master, volume and filer.
+
 This role was based on the work of egeneralov.seaweedfs
+
+## Inventory
+
+When used in a play targetting group `all` the role will use all nodes and deploy in such a way
+
+* a master server on the first node of the group
+* a volume server on each node
+* a filer server on the first node of the group
+
+You can also define groups `weed_master`, `weed_filer`, to choose where to deploy the server master and filer accordingly.
+In such case, the volume servers will be configured correctly to contact the master server(s).
 
 ## Requirements
 
@@ -15,9 +27,7 @@ None
     weed.ip: "{{ ansible_default_ipv4.address }}"
     weed.location: /usr/local/sbin # where the binary weed is installed
     weed.user.name: seaweed
-    weed.user.uid:
-    weed.user.gid:
-    weed.defaultReplication: "002"
+    weed.defaultReplication: "001"
     weed.master.port: 9333
     weed.master.dir: "/opt/seaweedfs/{{ domain }}/master"
     weed.volume.port: 8080
@@ -33,7 +43,7 @@ None
 
 MIT
 
-## Author Information
+## Authors Information
 
-Eduard Generalov <eduard@generalov.net>
-Baptiste Mille-Mathias <baptiste.millemathias@gmail.com>
+* Eduard Generalov <eduard@generalov.net>
+* Baptiste Mille-Mathias <baptiste.millemathias@gmail.com>
