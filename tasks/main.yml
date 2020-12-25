@@ -52,6 +52,7 @@
     src: "{{ download_url }}"
     dest: "{{ weed.location }}"
     remote_src: yes
+    mode: 0400
   register: weed_download
 
 - name: check correct weed version is installed
