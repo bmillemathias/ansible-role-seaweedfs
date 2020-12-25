@@ -23,6 +23,8 @@ None
 ## Role Defaults Variables
 
     weed.version: '2.10'
+    # large_disk is a specific build of seaweedfs to handle volume size bigger than 30 GB.
+    weed.large_disk: False
     weed.bind: 0.0.0.0
     weed.ip: "{{ ansible_default_ipv4.address }}"
     weed.location: /usr/local/sbin # where the binary weed is installed

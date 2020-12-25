@@ -11,6 +11,7 @@ default_weed:
   # version has to be quoted, else the the value will be treated as float and
   # trailing zeros may be trimmed.
   version: '2.10'
+  large_disk: False
   bind: 0.0.0.0
   ip: "{{ ansible_default_ipv4.address }}"
   location: /usr/local/sbin
@@ -33,4 +34,4 @@ default_weed:
     dir: "/opt/seaweedfs/{{ domain }}/filer"
     encryptData: false
 
-download_url: "https://github.com/chrislusf/seaweedfs/releases/download/{{ weed.version }}/{{ ansible_system|lower }}_{{ arch[ansible_architecture] }}.tar.gz"
+download_url: "https://github.com/chrislusf/seaweedfs/releases/download/{{ weed.version }}/{{ ansible_system|lower }}_{{ arch[ansible_architecture] }}{% if weed.large_disk %}_large_disk{% endif %}.tar.gz"
