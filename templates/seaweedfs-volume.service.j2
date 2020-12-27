@@ -10,6 +10,7 @@ ExecStart={{ weed.location }}/weed volume -publicUrl http://{{ domain }} -max {{
                                    -mserver {% for host in groups['weed_master'] %}{{ hostvars[host].ansible_default_ipv4.address }}:{{ weed.master.port }}{%if not loop.last %},{% endif %}{% endfor %} \
                                    -dataCenter {{ weed.volume.dataCenter | default('DefaultDataCenter') }} -rack {{ weed.volume.rack | default('DefaultRack') }}
 User={{ weed.user.name }}
+SyslogIdentifier=weed-volume
 
 [Install]
 WantedBy=multi-user.target

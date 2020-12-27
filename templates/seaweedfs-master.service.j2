@@ -8,6 +8,7 @@ Restart=always
 ExecStart={{ weed.location }}/weed master -ip.bind {{ weed.bind }} -ip {{ weed.ip }} \
                                           -mdir {{ weed.master.dir }} -defaultReplication {{ weed.defaultReplication }}
 User={{ weed.user.name }}
+SyslogIdentifier=weed-filer
 
 [Install]
 WantedBy=multi-user.target
