@@ -62,7 +62,7 @@
     cmd: weed version
   register: weed_installed_version
   failed_when: weed_installed_version.stdout.split()[2] is version(weed.version, '<>')
-  changed_when: False
+  changed_when: false
 
 - name: configure master server
   when: "'weed_master' in group_names"
