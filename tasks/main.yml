@@ -110,6 +110,8 @@
         dest: /etc/systemd/system/seaweedfs-volume.service
         mode: 0444
       register: weed_volume_service_file
+      notify:
+        - restart seaweedfs-volume.service
 
     - name: manage seaweedfs-volume.service runtime
       systemd:
@@ -139,6 +141,8 @@
         dest: /etc/systemd/system/seaweedfs-filer.service
         mode: 0444
       register: weed_filer_service_file
+      notify:
+        - restart seaweedfs-filer.service
 
     - name: manage seaweedfs-filer.service runtime
       systemd:
