@@ -1,0 +1,8 @@
+---
+- name: Prepare
+  hosts: all
+
+  tasks:
+    - name: "Install bmillemathias.seaweedfs"
+      include_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"

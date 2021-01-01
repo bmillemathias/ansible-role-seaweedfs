@@ -6,6 +6,7 @@ arch:
   x86: i386
 
 domain: weed.domain.tld
+action: install
 
 default_weed:
   # version has to be quoted, else the the value will be treated as float and

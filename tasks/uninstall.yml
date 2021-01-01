@@ -1,0 +1,90 @@
+---
+- name: remove filer server
+  when: "'weed_filer' in group_names"
+  block:
+    - name: stop seaweedfs-filer.service
+      systemd:
+        name: seaweedfs-filer.service
+        enabled: false
+        state: stopped
+
+    - name: remove seaweedfs-filer.service file
+      file:
+        path: /etc/systemd/system/seaweedfs-filer.service
+        state: absent
+
+    - name: reload systemd
+      systemd:
+        daemon_reload: true
+
+    - name: remove filer datapath
+      file:
+        path: "{{ weed.filer.dir }}"
+        state: absent
+      when:
+        - wipe_data is defined
+        - wipe_data is true
+
+- name: remove volume server
+  when: "'weed_volume' in group_names"
+  block:
+    - name: stop seaweedfs-volume.service
+      systemd:
+        name: seaweedfs-volume.service
+        enabled: false
+        state: stopped
+
+    - name: remove seaweedfs-volume.service file
+      file:
+        path: /etc/systemd/system/seaweedfs-volume.service
+        state: absent
+
+    - name: reload systemd
+      systemd:
+        daemon_reload: true
+
+    - name: remove volume datapath
+      file:
+        path: "{{ weed.volume.dir }}"
+        state: absent
+      when:
+        - wipe_data is defined
+        - wipe_data is true
+
+- name: remove master server
+  when: "'weed_master' in group_names"
+  block:
+    - name: stop seaweedfs-master.service
+      systemd:
+        name: seaweedfs-master.service
+        enabled: false
+        state: stopped
+
+    - name: remove seaweedfs-master.service file
+      file:
+        path: /etc/systemd/system/seaweedfs-master.service
+        state: absent
+
+    - name: reload systemd
+      systemd:
+        daemon_reload: true
+
+    - name: remove master datapath
+      file:
+        path: "{{ weed.master.dir }}"
+        state: absent
+      when:
+        - wipe_data is defined
+        - wipe_data is true
+
+- name: remove seaweed binary
+  file:
+    path: "{{ weed.location }}/weed"
+    state: absent
+
+- name: delete seaweedfs user
+  user:
+    name: "{{ weed.user.name }}"
+    state: absent
+    remove: true
+...
