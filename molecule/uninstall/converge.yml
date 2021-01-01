@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+
+  tasks:
+    - name: "uninstall bmillemathias.seaweedfs"
+      include_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      vars:
+        action: uninstall
