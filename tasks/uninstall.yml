@@ -7,15 +7,19 @@
         name: seaweedfs-filer.service
         enabled: false
         state: stopped
+      ignore_errors: true
 
     - name: remove seaweedfs-filer.service file
       file:
         path: /etc/systemd/system/seaweedfs-filer.service
         state: absent
+      register: remove_service_file
 
     - name: reload systemd
       systemd:
         daemon_reload: true
+      when:
+        - remove_service_file is changed
 
     - name: remove filer datapath
       file:
@@ -33,15 +37,19 @@
         name: seaweedfs-volume.service
         enabled: false
         state: stopped
+      ignore_errors: true
 
     - name: remove seaweedfs-volume.service file
       file:
         path: /etc/systemd/system/seaweedfs-volume.service
         state: absent
+      register: remove_service_file
 
     - name: reload systemd
       systemd:
         daemon_reload: true
+      when:
+        - remove_service_file is changed
 
     - name: remove volume datapath
       file:
@@ -59,6 +67,7 @@
         name: seaweedfs-master.service
         enabled: false
         state: stopped
+      ignore_errors: true
 
     - name: remove seaweedfs-master.service file
       file:
@@ -68,6 +77,8 @@
     - name: reload systemd
       systemd:
         daemon_reload: true
+      when:
+        - remove_service_file is changed
 
     - name: remove master datapath
       file:
