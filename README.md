@@ -3,7 +3,7 @@
 Provision installation of [seaweedfs](https://github.com/chrislusf/seaweedfs) a distributed object storage.
 This role installs the components master, volume and filer.
 
-This role was based on the work of egeneralov.seaweedfs
+This role was based on the role [egeneralov.seaweedfs](https://github.com/egeneralov/seaweedfs)
 
 ## Inventory
 
@@ -13,7 +13,8 @@ When used in a play targetting group `all` the role will use all nodes and deplo
 * a volume server on each node
 * a filer server on the first node of the group
 
-You can also define groups `weed_master`, `weed_filer`, to choose where to deploy the server master and filer accordingly.
+You can also define groups `weed_master`, `weed_volume` and `weed_filer`, to choose
+where to deploy the server master and filer accordingly.
 In such case, the volume servers will be configured correctly to contact the master server(s).
 
 ## Requirements
@@ -22,7 +23,7 @@ None
 
 ## Role Defaults Variables
 
-    weed.version: '2.10'
+    weed.version: '2.18'
     # large_disk is a specific build of seaweedfs to handle volume size bigger than 30 GB.
     weed.large_disk: False
     weed.bind: 0.0.0.0

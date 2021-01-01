@@ -6,6 +6,7 @@ arch:
   x86: i386
 
 domain: weed.domain.tld
+# to uninstall the role, define action: uninstall
 action: install
 
 default_weed:
