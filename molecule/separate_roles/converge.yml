@@ -1,0 +1,8 @@
+---
+- name: Scenario with groups in inventory
+  hosts: all
+
+  tasks:
+    - name: "Include bmillemathias.seaweedfs (without option)"
+      include_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"

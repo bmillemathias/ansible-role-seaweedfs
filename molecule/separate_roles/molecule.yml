@@ -1,0 +1,31 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
+platforms:
+  - name: instance
+    image: centos:8
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+provisioner:
+  name: ansible
+  inventory:
+    hosts:
+      weed_master:
+        localhost:
+      weed_volume:
+        localhost:
+      weed_filer:
+        localhost:
+verifier:
+  name: ansible
