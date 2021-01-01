@@ -23,15 +23,18 @@ default_weed:
   master:
     port: 9333
     dir: "/opt/seaweedfs/{{ domain }}/master"
+    additional_args:
   volume:
     port: 8080
     dir: "/opt/seaweedfs/{{ domain }}/volume"
     dataCenter: DefaultDataCenter
     rack: DefaultRack
     max_volumes: 16
+    additional_args:
   filer:
     port: 8889
     dir: "/opt/seaweedfs/{{ domain }}/filer"
     encryptData: false
+    additional_args:
 
 download_url: "https://github.com/chrislusf/seaweedfs/releases/download/{{ weed.version }}/{{ ansible_system|lower }}_{{ arch[ansible_architecture] }}{% if weed.large_disk %}_large_disk{% endif %}.tar.gz"
