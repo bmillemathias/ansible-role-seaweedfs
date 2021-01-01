@@ -1,5 +1,5 @@
 ---
-name: Molecule Test
+name: Molecule Tests
 on:
   push:
     branches:
@@ -15,3 +15,5 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - uses: gofrolist/molecule-action@v2
+        with:
+          molecule_args: --all
