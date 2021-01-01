@@ -3,6 +3,8 @@
   hosts: all
 
   tasks:
-    - name: "Include bmillemathias.seaweedfs (without option)"
+    - name: "Include bmillemathias.seaweedfs (large disk)"
       include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      vars:
+        - large_disk: true
