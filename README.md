@@ -30,7 +30,7 @@ None
     weed.ip: "{{ ansible_default_ipv4.address }}"
     weed.location: /usr/local/sbin # where the binary weed is installed
     weed.user.name: seaweed
-    weed.defaultReplication: "001"
+    weed.defaultReplication: "000"
     weed.master.port: 9333
     weed.master.dir: "/opt/seaweedfs/{{ domain }}/master"
     weed.volume.port: 8080
