@@ -127,4 +127,6 @@
       wait_for:
         port: "{{ weed.filer.port | int }}"
         timeout: 30
+
+- meta: flush_handlers
 ...
