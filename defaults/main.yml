@@ -12,7 +12,7 @@ action: install
 default_weed:
   # version has to be quoted, else the the value will be treated as float and
   # trailing zeros may be trimmed.
-  version: '2.18'
+  version: '2.19'
   large_disk: False
   bind: 0.0.0.0
   ip: "{{ ansible_default_ipv4.address }}"
