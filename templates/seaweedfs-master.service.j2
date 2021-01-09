@@ -9,7 +9,7 @@ ExecStart={{ weed.location }}/weed master -ip.bind {{ weed.bind }} -ip {{ weed.i
                                           -mdir {{ weed.master.dir }} -defaultReplication {{ weed.defaultReplication }} \
                                         {{ weed.master.additional_args }}
 User={{ weed.user.name }}
-SyslogIdentifier=weed-filer
+SyslogIdentifier=weed-master
 
 [Install]
 WantedBy=multi-user.target
