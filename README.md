@@ -1,5 +1,7 @@
 # Ansible Role: seaweedfs
 
+[![CI](https://github.com/bmillemathias/ansible-role-seaweedfs/workflows/CI/badge.svg?event=push)](https://github.com/bmillemathias/ansible-role-seaweedfs/actions?query=workflow%3ACI)
+
 Provision installation of [seaweedfs](https://github.com/chrislusf/seaweedfs) a distributed object storage.
 This role installs the components master, volume and filer.
 
