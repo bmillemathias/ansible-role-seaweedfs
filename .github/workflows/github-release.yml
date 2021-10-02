@@ -1,0 +1,34 @@
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+name: Create Release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create GitHub Release
+        id: create_github_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body:
+          draft: false
+          prerelease: true
+
+      - name: Create Galaxy Release
+        id: create_galaxy_release
+        uses: robertdebock/galaxy-action@1.1.0
+        with:
+          galaxy_api_key: ${{ secrets.galaxy_api_key }}

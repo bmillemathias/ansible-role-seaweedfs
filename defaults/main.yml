@@ -6,33 +6,37 @@ arch:
   x86: i386
 
 domain: weed.domain.tld
+# to uninstall the role, define action: uninstall
+action: install
 
 default_weed:
   # version has to be quoted, else the the value will be treated as float and
   # trailing zeros may be trimmed.
-  version: '2.10'
+  version: '2.30'
+  large_disk: False
   bind: 0.0.0.0
   ip: "{{ ansible_default_ipv4.address }}"
   location: /usr/local/sbin
   user:
     name: seaweed
-    uid:
-    gid:
-  # defaultReplication is set by a triplet
-  # 002 => 2 replicas in the same rack
-  defaultReplication: "002"
+  # defaultReplication is set by a triplet, see
+  # https://github.com/chrislusf/seaweedfs/wiki/Replication#the-meaning-of-replication-type
+  defaultReplication: "000"
   master:
     port: 9333
     dir: "/opt/seaweedfs/{{ domain }}/master"
+    additional_args:
   volume:
     port: 8080
     dir: "/opt/seaweedfs/{{ domain }}/volume"
     dataCenter: DefaultDataCenter
     rack: DefaultRack
     max_volumes: 16
+    additional_args:
   filer:
     port: 8889
     dir: "/opt/seaweedfs/{{ domain }}/filer"
     encryptData: false
+    additional_args:
 
-download_url: "https://github.com/chrislusf/seaweedfs/releases/download/{{ weed.version }}/{{ ansible_system|lower }}_{{ arch[ansible_architecture] }}.tar.gz"
+download_url: "https://github.com/chrislusf/seaweedfs/releases/download/{{ weed.version }}/{{ ansible_system|lower }}_{{ arch[ansible_architecture] }}{% if weed.large_disk %}_large_disk{% endif %}.tar.gz"

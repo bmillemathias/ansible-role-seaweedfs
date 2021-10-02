@@ -3,6 +3,42 @@
   hosts: all
 
   tasks:
-    - name: "Include bmillemathias.seaweedfs"
+    - name: find the latest version of seaweedfs
+      uri:
+        url: http://api.github.com/repos/chrislusf/seaweedfs/releases/latest
+        headers:
+          Accept: application/vnd.github.v3+json
+        body_format: json
+      register: r
+
+    - name: define version to use
+      set_fact:
+        version: "{{ (r.json.html_url).split('/')[7] }}"
+
+    - name: "Include bmillemathias.seaweedfs (without option)"
       include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      vars:
+        weed:
+          version: "{{ version }}"
+
+    - name: Check master port is up and running
+      wait_for:
+        port: "{{ weed.master.port | int }}"
+        timeout: 15
+      retries: 3
+
+    - name: reserve a volume id and a file id
+      uri:
+        url: "http://localhost:{{ weed.master.port }}/dir/assign"
+      register: master_result
+
+    - name: put some data in the volume server
+      uri:
+        url: "http://{{ master_result.json.url }}/{{ master_result.json.fid }}"
+        status_code: [200, 201]
+        method: POST
+        body_format: form-multipart
+        body:
+          file: "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/assets/ansible_logo.webp"
+

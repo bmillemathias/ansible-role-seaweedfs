@@ -6,8 +6,10 @@ After=network.target
 Type=simple
 Restart=always
 ExecStart={{ weed.location }}/weed master -ip.bind {{ weed.bind }} -ip {{ weed.ip }} \
-                                          -mdir {{ weed.master.dir }} -defaultReplication {{ weed.defaultReplication }}
+                                          -mdir {{ weed.master.dir }} -defaultReplication {{ weed.defaultReplication }} \
+                                        {{ weed.master.additional_args }}
 User={{ weed.user.name }}
+SyslogIdentifier=weed-master
 
 [Install]
 WantedBy=multi-user.target
