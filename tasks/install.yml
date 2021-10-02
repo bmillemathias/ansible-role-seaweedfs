@@ -1,0 +1,132 @@
+---
+- name: "check the release {{ weed.version }} exists on GitHub"
+  uri:
+    url: "https://api.github.com/repos/chrislusf/seaweedfs/releases/tags/{{ weed.version }}"
+  run_once: true
+  delegate_to: localhost
+  check_mode: false
+
+- name: ensure tools are installed
+  package:
+    name:
+      - tar
+      - gzip
+
+- name: create seaweedfs user
+  user:
+    name: "{{ weed.user.name }}"
+    shell: /bin/false
+    uid: "{{ (weed.user.uid | default(omit)) }}"
+    group: "{{ weed.user.group | default(omit) }}"
+    groups: "{{ weed.user.groups | default(omit) }}"
+    system: true
+    create_home: false
+
+- name: Download seaweed archive
+  unarchive:
+    src: "{{ download_url }}"
+    dest: "{{ weed.location }}"
+    remote_src: yes
+  register: weed_download
+
+- name: check correct weed version is installed
+  command:
+    cmd: weed version
+  register: weed_installed_version
+  failed_when: weed_installed_version.stdout.split()[2] is version(weed.version, '<>')
+  changed_when: false
+
+- name: configure master server
+  when: "'weed_master' in group_names"
+  block:
+    - name: Ensure master datapath exists
+      file:
+        path: "{{ weed.master.dir }}"
+        state: directory
+        owner: "{{ weed.user.name }}"
+        mode: "700"
+
+    - name: place seaweedfs-master.service file
+      template:
+        src: seaweedfs-master.service.j2
+        dest: /etc/systemd/system/seaweedfs-master.service
+        mode: 0444
+      register: weed_master_service_file
+      notify:
+        - restart seaweedfs-master.service
+
+    - name: manage seaweedfs-master.service runtime
+      systemd:
+        name: seaweedfs-master.service
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: check master port is opened
+      wait_for:
+        port: "{{ weed.master.port | int }}"
+        timeout: 30
+
+- name: configure volume server
+  block:
+    - name: Ensure volume datapath exists
+      file:
+        path: "{{ weed.volume.dir }}"
+        state: directory
+        owner: "{{ weed.user.name }}"
+        mode: "700"
+
+    - name: place seaweedfs-volume.service file
+      template:
+        src: seaweedfs-volume.service.j2
+        dest: /etc/systemd/system/seaweedfs-volume.service
+        mode: 0444
+      register: weed_volume_service_file
+      notify:
+        - restart seaweedfs-volume.service
+
+    - name: manage seaweedfs-volume.service runtime
+      systemd:
+        name: seaweedfs-volume.service
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: check volume port is opened
+      wait_for:
+        port: "{{ weed.volume.port | int }}"
+        timeout: 30
+
+- name: configure filer server
+  when: "'weed_filer' in group_names"
+  block:
+    - name: Ensure filer datapath exists
+      file:
+        path: "{{ weed.filer.dir }}"
+        state: directory
+        owner: "{{ weed.user.name }}"
+        mode: "700"
+
+    - name: place seaweedfs-filer.service file
+      template:
+        src: seaweedfs-filer.service.j2
+        dest: /etc/systemd/system/seaweedfs-filer.service
+        mode: 0444
+      register: weed_filer_service_file
+      notify:
+        - restart seaweedfs-filer.service
+
+    - name: manage seaweedfs-filer.service runtime
+      systemd:
+        name: seaweedfs-filer.service
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: check filer port is opened
+      wait_for:
+        port: "{{ weed.filer.port | int }}"
+        timeout: 30
+
+- meta: flush_handlers
+...

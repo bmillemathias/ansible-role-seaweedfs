@@ -9,7 +9,7 @@ lint: |
   ansible-lint
   flake8
 platforms:
-  - name: centos-8
+  - name: instance
     image: centos:8
     command: /sbin/init
     tmpfs:

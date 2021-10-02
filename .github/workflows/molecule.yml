@@ -1,6 +1,15 @@
 ---
-name: Molecule Test
-on: [push, pull_request]
+name: CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+  schedule:
+    - cron: '0 8 * * 1'
+
 jobs:
   molecule:
     runs-on: ubuntu-latest
@@ -9,15 +18,5 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - uses: gofrolist/molecule-action@v2
-#       - name: Set up Python ${{ matrix.python-version }}
-#         uses: actions/setup-python@v2
-#         with:
-#           python-version: ${{ matrix.python-version }}
-#       - name: Install dependencies
-#         run: |
-#           sudo apt install podman
-#           python3 -m pip install --upgrade pip
-#           python3 -m pip install molecule[podman]
-#       - name: Test with molecule
-#         run: |
-#           molecule test
+        with:
+          molecule_args: --all
