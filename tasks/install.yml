@@ -128,5 +128,5 @@
         port: "{{ weed.filer.port | int }}"
         timeout: 30
 
-- meta: flush_handlers
-...
+- name: Flush Handlers
+  meta: flush_handlers
