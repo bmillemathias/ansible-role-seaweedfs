@@ -19,7 +19,7 @@
       include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       vars:
-        weed:
+        input:
           version: "{{ version }}"
 
     - name: Check master port is up and running

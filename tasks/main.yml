@@ -1,7 +1,7 @@
 ---
 - name: merge variables passed to role and the defaults
   set_fact:
-    weed: "{{ (default_weed | combine((weed | default({})), recursive=True)) }}"
+    weed: "{{ default_weed | combine((input | default({})), recursive=True) }}"
 
 - name: check some variables value
   assert:
