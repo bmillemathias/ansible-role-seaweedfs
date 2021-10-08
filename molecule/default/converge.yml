@@ -28,16 +28,16 @@
         timeout: 15
       retries: 3
 
-    - name: reserve a volume id and a file id
-      uri:
-        url: "http://localhost:{{ weed.master.port }}/dir/assign"
-      register: master_result
-
-    - name: put some data in the volume server
-      uri:
-        url: "http://{{ master_result.json.url }}/{{ master_result.json.fid }}"
-        status_code: [200, 201]
-        method: POST
-        body_format: form-multipart
-        body:
-          file: "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/assets/ansible_logo.webp"
+##     - name: reserve a volume id and a file id
+##       uri:
+##         url: "http://localhost:{{ weed.master.port }}/dir/assign"
+##       register: master_result
+## 
+##     - name: put some data in the volume server
+##       uri:
+##         url: "http://{{ master_result.json.url }}/{{ master_result.json.fid }}"
+##         status_code: [200, 201]
+##         method: POST
+##         body_format: form-multipart
+##         body:
+##           file: "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/assets/ansible_logo.webp"
