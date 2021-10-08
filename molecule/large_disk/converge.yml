@@ -3,8 +3,22 @@
   hosts: all
 
   tasks:
+    - name: find the latest version of seaweedfs
+      uri:
+        url: http://api.github.com/repos/chrislusf/seaweedfs/releases/latest
+        headers:
+          Accept: application/vnd.github.v3+json
+        body_format: json
+      register: r
+
+    - name: define version to use
+      set_fact:
+        version: "{{ (r.json.html_url).split('/')[7] }}"
+
     - name: "Include bmillemathias.seaweedfs (large disk)"
       include_role:
         name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
       vars:
-        - large_disk: true
+        large_disk: true
+        input:
+          version: "{{ version }}"
