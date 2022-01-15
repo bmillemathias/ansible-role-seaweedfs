@@ -11,6 +11,7 @@
     name:
       - tar
       - gzip
+  become: true
 
 - name: create seaweedfs user
   user:
@@ -21,6 +22,7 @@
     groups: "{{ weed.user.groups | default(omit) }}"
     system: true
     create_home: false
+  become: true
 
 - name: Download seaweed archive
   unarchive:
@@ -28,6 +30,7 @@
     dest: "{{ weed.location }}"
     remote_src: yes
   register: weed_download
+  become: true
 
 - name: check correct weed version is installed
   command:
@@ -38,6 +41,7 @@
 
 - name: configure master server
   when: "'weed_master' in group_names"
+  become: true
   block:
     - name: Ensure master datapath exists
       file:
@@ -68,6 +72,8 @@
         timeout: 30
 
 - name: configure volume server
+  when: "'weed_volume' in group_names"
+  become: true
   block:
     - name: Ensure volume datapath exists
       file:
@@ -99,6 +105,7 @@
 
 - name: configure filer server
   when: "'weed_filer' in group_names"
+  become: true
   block:
     - name: Ensure filer datapath exists
       file:
