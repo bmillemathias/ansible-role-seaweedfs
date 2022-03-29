@@ -23,6 +23,11 @@ In such case, the volume servers will be configured correctly to contact the mas
 
 None
 
+## Install role
+```
+ansible-galaxy install --force git+https://github.com/bmillemathias/ansible-role-seaweedfs.git,main
+```
+
 ## Role Defaults Variables
 
     weed.version: '2.18'
@@ -45,6 +50,16 @@ None
     weed.filer.encryptData: false
 
 ## License
+
+## Example Playbook
+```
+---
+- hosts: seaweedfs
+  become: true
+  roles:
+    - role: ansible-role-seaweedfs
+      weed_version: 2.74
+```
 
 MIT
 
